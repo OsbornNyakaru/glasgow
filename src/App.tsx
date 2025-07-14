@@ -65,43 +65,84 @@ const exportToCSV = (orders: Order[]) => {
 const initialMenuItems: FoodItem[] = [
   {
     id: '1',
-    name: 'Chicken Biryani',
-    price: 12.99,
-    description: 'Aromatic basmati rice with spiced chicken',
+    name: 'Chapo Beans/Ndengu',
+    price: 120,
+    description: 'Soft chapati served with beans or green grams (ndengu)',
     available: true,
-    category: 'Main Course'
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '2',
-    name: 'Vegetable Curry',
-    price: 10.99,
-    description: 'Mixed vegetables in rich coconut curry',
+    name: 'Rice Beans/Ndengu',
+    price: 120,
+    description: 'Steamed rice served with beans or green grams (ndengu)',
     available: true,
-    category: 'Main Course'
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '3',
-    name: 'Grilled Sandwich',
-    price: 8.99,
-    description: 'Toasted sandwich with fresh vegetables',
+    name: 'Ugali/Rice/Chapati Matumbo',
+    price: 140,
+    description: 'Choice of ugali, rice, or chapati served with matumbo (tripe)',
     available: true,
-    category: 'Snacks'
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '4',
-    name: 'Fruit Salad',
-    price: 6.99,
-    description: 'Fresh seasonal fruits with honey',
+    name: 'Ugali/Rice/Chapati Beef',
+    price: 160,
+    description: 'Choice of ugali, rice, or chapati served with tender beef stew',
     available: true,
-    category: 'Dessert'
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/11401287/pexels-photo-11401287.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '5',
-    name: 'Masala Chai',
-    price: 3.99,
-    description: 'Traditional spiced tea',
+    name: 'Pilau',
+    price: 140,
+    description: 'Fragrant spiced rice cooked with meat and aromatic spices',
     available: true,
-    category: 'Beverages'
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/8753657/pexels-photo-8753657.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '6',
+    name: 'Ugali/Rice/Chapati Kuku',
+    price: 170,
+    description: 'Choice of ugali, rice, or chapati served with chicken (kuku)',
+    available: true,
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '7',
+    name: 'Ugali/Rice/Chapati Mayai',
+    price: 120,
+    description: 'Choice of ugali, rice, or chapati served with eggs (mayai)',
+    available: true,
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '8',
+    name: 'Ugali/Rice/Chapati Pork',
+    price: 170,
+    description: 'Choice of ugali, rice, or chapati served with pork stew',
+    available: true,
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/323682/pexels-photo-323682.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '9',
+    name: 'Ugali Omena',
+    price: 120,
+    description: 'Traditional ugali served with omena (small dried fish)',
+    available: true,
+    category: 'Main Course',
+    image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
   }
 ];
 
@@ -191,7 +232,8 @@ function App() {
         price: Number(newItem.price),
         description: newItem.description || '',
         available: true,
-        category: newItem.category || 'Other'
+        category: newItem.category || 'Other',
+        image: newItem.image || ''
       };
       setMenuItems([...menuItems, item]);
     }
@@ -303,8 +345,15 @@ function App() {
                       }`}
                       onClick={() => handleItemSelect(item)}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
+                      <div className="flex items-start space-x-4">
+                        {item.image && (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <h4 className="font-medium text-gray-900">{item.name}</h4>
                             {!item.available && (
@@ -315,12 +364,15 @@ function App() {
                           </div>
                           <p className="text-sm text-gray-600 mt-1">{item.description}</p>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right flex-shrink-0">
                           <p className="font-semibold text-gray-900">KES {item.price}</p>
                           {selectedItems.some(selected => selected.id === item.id) && (
                             <CheckCircle className="w-5 h-5 text-orange-600 mx-auto mt-1" />
                           )}
                         </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
                       </div>
                     </div>
                   ))}
@@ -529,13 +581,20 @@ function App() {
                           >
                             <option value="">Select category</option>
                             <option value="Main Course">Main Course</option>
-                            <option value="Snacks">Snacks</option>
-                            <option value="Beverages">Beverages</option>
-                            <option value="Dessert">Dessert</option>
                             <option value="Other">Other</option>
                           </select>
                         </div>
                         <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                          <input
+                            type="url"
+                            value={editingItem.image || ''}
+                            onChange={(e) => setEditingItem({...editingItem, image: e.target.value})}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                            placeholder="https://example.com/image.jpg"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
                           <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                           <input
                             type="text"
@@ -565,13 +624,22 @@ function App() {
                   <div className="space-y-3">
                     {menuItems.map((item) => (
                       <div key={item.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex-1">
+                        <div className="flex items-center space-x-3 flex-1">
+                          {item.image && (
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-12 h-12 object-cover rounded-lg"
+                            />
+                          )}
+                          <div>
                           <div className="flex items-center space-x-3">
                             <h4 className="font-medium text-gray-900">{item.name}</h4>
                             <span className="text-sm text-gray-500">{item.category}</span>
                             <span className="font-medium text-gray-900">KES {item.price}</span>
                           </div>
                           <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                          </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
