@@ -447,7 +447,8 @@ function App() {
                 <div className="p-4 border-b">
                   <h3 className="font-semibold text-gray-900">{category}</h3>
                 </div>
-                <div className="p-4 space-y-3">
+                <div className="p-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {items.map((item) => (
                     <div
                       key={item.id}
@@ -763,6 +764,7 @@ function App() {
                         </div>
                       </div>
                     ))}
+                  </div>
                   </div>
                 </div>
               </div>
