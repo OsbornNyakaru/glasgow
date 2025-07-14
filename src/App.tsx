@@ -276,6 +276,7 @@ function App() {
   const [adminPasswordInput, setAdminPasswordInput] = useState('');
   const [adminError, setAdminError] = useState('');
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+  const [selectedMeal, setSelectedMeal] = useState<FoodItem | null>(null);
 
   // Helper to parse closing time string ("HH:mm") into a Date object for today
   const getClosingDate = () => {
@@ -857,7 +858,11 @@ function App() {
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                         {items.map(item => (
-                          <div key={item.id} className={`border rounded-lg p-2 md:p-4 ${!item.available ? 'opacity-50' : ''}`}>
+                          <div
+                            key={item.id}
+                            className={`border rounded-lg p-2 md:p-4 ${!item.available ? 'opacity-50' : ''} cursor-pointer`}
+                            onClick={() => setSelectedMeal(item)}
+                          >
                             <div className="flex gap-2 md:gap-3">
                               {item.image && (
                                 <img 
@@ -873,7 +878,7 @@ function App() {
                                 </div>
                                 <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2">{item.description}</p>
                                 <button
-                                  onClick={() => addToCart(item)}
+                                  onClick={e => { e.stopPropagation(); addToCart(item); }}
                                   disabled={!item.available || !isOrderingTime()}
                                   className={`w-full py-2 px-2 md:px-4 rounded-lg text-xs md:text-sm font-medium ${
                                     item.available && isOrderingTime()
@@ -1002,45 +1007,50 @@ function App() {
         )}
       </div>
       <AnimatePresence>
-        {showAdminLogin && (
+        {selectedMeal && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={() => setSelectedMeal(null)}
           >
             <motion.div
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm mx-2 p-2"
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative border border-gray-200"
               initial={{ scale: 0.8, y: 100, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.8, y: 100, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              onClick={e => e.stopPropagation()}
             >
               <button
-                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white text-xl focus:outline-none"
-                onClick={() => setShowAdminLogin(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-xl focus:outline-none"
+                onClick={() => setSelectedMeal(null)}
                 aria-label="Close"
               >
                 &times;
               </button>
-              <h2 className="text-xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Admin Login</h2>
-              <form onSubmit={handleAdminLogin} className="space-y-4">
-                <input
-                  type="password"
-                  value={adminPasswordInput}
-                  onChange={e => setAdminPasswordInput(e.target.value)}
-                  className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
-                  placeholder="Enter admin password"
-                  autoFocus
+              {selectedMeal.image && (
+                <img
+                  src={selectedMeal.image}
+                  alt={selectedMeal.name}
+                  className="w-full h-48 object-cover rounded-lg mb-4"
                 />
-                {adminError && <div className="text-red-500 text-sm">{adminError}</div>}
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 rounded-lg font-medium text-lg bg-gradient-to-tr from-blue-600 to-indigo-500 text-white hover:from-blue-700 hover:to-indigo-600 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                >
-                  Login
-                </button>
-              </form>
+              )}
+              <h2 className="text-2xl font-bold mb-2 text-indigo-700">{selectedMeal.name}</h2>
+              <p className="text-lg font-semibold text-blue-600 mb-2">KES {selectedMeal.price}</p>
+              <p className="text-gray-700 mb-4">{selectedMeal.description}</p>
+              <button
+                onClick={() => { addToCart(selectedMeal); setSelectedMeal(null); }}
+                disabled={!selectedMeal.available || !isOrderingTime()}
+                className={`w-full py-3 px-4 rounded-lg font-medium text-lg transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
+                  selectedMeal.available && isOrderingTime()
+                    ? 'bg-gradient-to-tr from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                {!selectedMeal.available ? 'Unavailable' : !isOrderingTime() ? 'Ordering Closed' : 'Add to Cart'}
+              </button>
             </motion.div>
           </motion.div>
         )}
