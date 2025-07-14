@@ -28,12 +28,18 @@ interface Order {
 
 // Utility functions
 const getCurrentTime = () => new Date();
-const formatTime = (date: Date) => {
-  return date.toLocaleTimeString('en-US', { 
-    hour: '2-digit', 
-    minute: '2-digit',
-    hour12: true 
-  });
+const formatTime = (date: any) => {
+  if (!date) return '';
+  if (typeof date === 'number') date = new Date(date);
+  if (typeof date.toDate === 'function') date = date.toDate();
+  if (date instanceof Date) {
+    return date.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  }
+  return '';
 };
 
 const exportToGoogleSheets = (orders: Order[]) => {
