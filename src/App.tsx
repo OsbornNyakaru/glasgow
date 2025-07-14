@@ -262,7 +262,8 @@ function App() {
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [editingItem, setEditingItem] = useState<FoodItem | null>(null);
-  const [orderClosingTime, setOrderClosingTime] = useState('12:45');
+  const [orderClosingTime, setOrderClosingTime] = useState('');
+  const [closingTimeLoaded, setClosingTimeLoaded] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [adminAuth, setAdminAuth] = useState(() => sessionStorage.getItem('adminAuth') === 'true');
   const [showAdminLogin, setShowAdminLogin] = useState(false);
@@ -284,18 +285,29 @@ function App() {
     return now < cutoffTime;
   };
 
-  // Firestore: Listen for real-time updates to closing time
+  // Firestore: On mount, fetch closing time and create if missing
   useEffect(() => {
     const closingTimeDoc = doc(db, 'settings', 'orderClosingTime');
-    const unsubscribe = onSnapshot(closingTimeDoc, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data && data.value) {
-          setOrderClosingTime(data.value);
-        }
+    let unsub: (() => void) | undefined;
+    (async () => {
+      const snap = await getDoc(closingTimeDoc);
+      if (!snap.exists()) {
+        await setDoc(closingTimeDoc, { value: '12:45' });
+        setOrderClosingTime('12:45');
+      } else {
+        const data = snap.data();
+        setOrderClosingTime(data.value || '12:45');
       }
-    });
-    return () => unsubscribe();
+      setClosingTimeLoaded(true);
+      // Listen for real-time updates
+      unsub = onSnapshot(closingTimeDoc, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setOrderClosingTime(data.value || '12:45');
+        }
+      });
+    })();
+    return () => { if (unsub) unsub(); };
   }, []);
 
   // Update time every minute
@@ -542,8 +554,16 @@ function App() {
     const newTime = e.target.value;
     setOrderClosingTime(newTime);
     const closingTimeDoc = doc(db, 'settings', 'orderClosingTime');
-    await setDoc(closingTimeDoc, { value: newTime });
+    try {
+      await setDoc(closingTimeDoc, { value: newTime });
+    } catch (err) {
+      toast.error('Failed to update closing time.');
+    }
   };
+
+  if (!closingTimeLoaded) {
+    return <div className="flex items-center justify-center min-h-screen text-lg text-gray-500">Loading...</div>;
+  }
 
   if (currentView === 'admin') {
     return (
