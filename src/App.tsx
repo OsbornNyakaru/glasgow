@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Users, ShoppingCart, Settings, Download, Plus, Edit3, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import * as XLSX from 'xlsx';
 
 // Types
 interface FoodItem {
@@ -23,13 +25,6 @@ interface Order {
 
 // Utility functions
 const getCurrentTime = () => new Date();
-const isOrderingTime = () => {
-  const now = getCurrentTime();
-  const cutoffTime = new Date();
-  cutoffTime.setHours(12, 45, 0, 0);
-  return now < cutoffTime;
-};
-
 const formatTime = (date: Date) => {
   return date.toLocaleTimeString('en-US', { 
     hour: '2-digit', 
@@ -38,7 +33,7 @@ const formatTime = (date: Date) => {
   });
 };
 
-const exportToCSV = (orders: Order[]) => {
+const exportToGoogleSheets = (orders: Order[]) => {
   const headers = ['Order ID', 'Customer Name', 'Items', 'Special Instructions', 'Time', 'Status'];
   const rows = orders.map(order => [
     order.id,
@@ -48,18 +43,10 @@ const exportToCSV = (orders: Order[]) => {
     formatTime(order.timestamp),
     order.status
   ]);
-  
-  const csvContent = [headers, ...rows]
-    .map(row => row.map(field => `"${field}"`).join(','))
-    .join('\n');
-  
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `food-orders-${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
-  window.URL.revokeObjectURL(url);
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Orders');
+  XLSX.writeFile(workbook, `food-orders-${new Date().toISOString().split('T')[0]}.xlsx`);
 };
 
 // Sample data with main course meals
@@ -272,6 +259,34 @@ function App() {
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [editingItem, setEditingItem] = useState<FoodItem | null>(null);
+  const [orderClosingTime, setOrderClosingTime] = useState(() => {
+    return localStorage.getItem('orderClosingTime') || '12:45';
+  });
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [adminAuth, setAdminAuth] = useState(() => sessionStorage.getItem('adminAuth') === 'true');
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminPasswordInput, setAdminPasswordInput] = useState('');
+  const [adminError, setAdminError] = useState('');
+  const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+
+  // Helper to parse closing time string ("HH:mm") into a Date object for today
+  const getClosingDate = () => {
+    const [hours, minutes] = orderClosingTime.split(":").map(Number);
+    const closing = new Date();
+    closing.setHours(hours, minutes, 0, 0);
+    return closing;
+  };
+
+  const isOrderingTime = () => {
+    const now = getCurrentTime();
+    const cutoffTime = getClosingDate();
+    return now < cutoffTime;
+  };
+
+  // Persist closing time to localStorage
+  useEffect(() => {
+    localStorage.setItem('orderClosingTime', orderClosingTime);
+  }, [orderClosingTime]);
 
   // Update time every minute
   useEffect(() => {
@@ -487,6 +502,30 @@ function App() {
     );
   };
 
+  // Handle admin login
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminPasswordInput === ADMIN_PASSWORD) {
+      setAdminAuth(true);
+      sessionStorage.setItem('adminAuth', 'true');
+      setShowAdminLogin(false);
+      setAdminPasswordInput('');
+      setAdminError('');
+      setCurrentView('admin');
+    } else {
+      setAdminError('Incorrect password');
+    }
+  };
+
+  // When switching to admin, require login if not authenticated
+  const handleAdminClick = () => {
+    if (adminAuth) {
+      setCurrentView('admin');
+    } else {
+      setShowAdminLogin(true);
+    }
+  };
+
   if (currentView === 'admin') {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -499,11 +538,11 @@ function App() {
               </div>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() => exportToCSV(orders)}
-                  className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  onClick={() => exportToGoogleSheets(orders)}
+                  className="flex items-center gap-2 bg-gradient-to-tr from-green-500 to-emerald-500 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-emerald-600 shadow-md transition-colors duration-200"
                 >
                   <Download className="w-4 h-4" />
-                  Export Orders
+                  Export to Google Sheets
                 </button>
                 <button
                   onClick={() => setCurrentView('customer')}
@@ -511,7 +550,24 @@ function App() {
                 >
                   Customer View
                 </button>
+                <button
+                  onClick={() => { setAdminAuth(false); sessionStorage.removeItem('adminAuth'); setCurrentView('customer'); }}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 ml-2"
+                >
+                  Logout
+                </button>
               </div>
+            </div>
+            {/* Closing time control */}
+            <div className="mt-4 flex items-center gap-4">
+              <label className="font-medium">Order Closing Time:</label>
+              <input
+                type="time"
+                value={orderClosingTime}
+                onChange={e => setOrderClosingTime(e.target.value)}
+                className="border rounded px-2 py-1"
+              />
+              <span className="text-sm text-gray-600">Current: {orderClosingTime}</span>
             </div>
           </div>
         </div>
@@ -687,9 +743,10 @@ function App() {
                 }`}>
                   {isOrderingTime() ? 'Open' : 'Closed'}
                 </span>
+                <span className="ml-2 text-xs text-gray-500">Order closes at {orderClosingTime}</span>
               </div>
               <button
-                onClick={() => setCurrentView('admin')}
+                onClick={handleAdminClick}
                 className="flex items-center gap-2 bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 text-sm"
               >
                 <Settings className="w-4 h-4" />
@@ -772,93 +829,155 @@ function App() {
 
         {/* Floating Cart Button - Only show when cart has items */}
         {cart.length > 0 && (
-          <div className="fixed bottom-6 right-6 z-50">
-            <div className="relative group">
-              {/* Cart Button */}
-              <button className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2">
-                <ShoppingCart className="w-6 h-6" />
-                <span className="bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center absolute -top-2 -right-2">
-                  {cart.length}
-                </span>
-                <span className="hidden sm:inline-block font-medium">KES {getTotalPrice()}</span>
-              </button>
-
-              {/* Cart Dropdown - Shows on hover */}
-              <div className="absolute bottom-full right-0 mb-2 w-80 bg-white rounded-lg shadow-xl border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <ShoppingCart className="w-5 h-5" />
-                    Your Order ({cart.length})
-                  </h3>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Your Name</label>
-                      <input
-                        type="text"
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}
-                        className="w-full p-2 border rounded-lg text-sm"
-                        placeholder="Enter your name"
-                        disabled={!isOrderingTime()}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Special Instructions (Optional)</label>
-                      <textarea
-                        value={specialInstructions}
-                        onChange={(e) => setSpecialInstructions(e.target.value)}
-                        className="w-full p-2 border rounded-lg text-sm"
-                        rows={2}
-                        placeholder="Any special requests..."
-                        disabled={!isOrderingTime()}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
-                    {cart.map((item, index) => (
-                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-sm">{item.name}</h4>
-                          <p className="text-blue-600 font-medium text-sm">KES {item.price}</p>
-                        </div>
-                        <button
-                          onClick={() => removeFromCart(index)}
-                          className="text-red-500 hover:text-red-700 p-1"
+          <>
+            <button
+              className="fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-blue-600 to-indigo-500 hover:from-blue-700 hover:to-indigo-600 text-white p-4 rounded-full shadow-xl flex items-center gap-2 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-indigo-300"
+              onClick={() => setIsCartOpen(true)}
+              aria-label="View Cart"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              <span className="bg-pink-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center absolute -top-2 -right-2">
+                {cart.length}
+              </span>
+              <span className="hidden sm:inline-block font-medium">KES {getTotalPrice()}</span>
+            </button>
+            <AnimatePresence>
+              {isCartOpen && (
+                <motion.div
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                >
+                  <motion.div
+                    className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 relative border border-gray-200 dark:border-gray-700"
+                    initial={{ scale: 0.8, y: 100, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    exit={{ scale: 0.8, y: 100, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  >
+                    <button
+                      className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white text-xl focus:outline-none"
+                      onClick={() => setIsCartOpen(false)}
+                      aria-label="Close Cart"
+                    >
+                      &times;
+                    </button>
+                    <h3 className="text-2xl font-bold mb-4 flex items-center gap-2 text-indigo-700 dark:text-indigo-300">
+                      <ShoppingCart className="w-6 h-6" />
+                      Your Order ({cart.length})
+                    </h3>
+                    <div className="space-y-4 mb-6">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Your Name</label>
+                        <input
+                          type="text"
+                          value={customerName}
+                          onChange={(e) => setCustomerName(e.target.value)}
+                          className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                          placeholder="Enter your name"
                           disabled={!isOrderingTime()}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        />
                       </div>
-                    ))}
-                  </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Special Instructions (Optional)</label>
+                        <textarea
+                          value={specialInstructions}
+                          onChange={(e) => setSpecialInstructions(e.target.value)}
+                          className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                          rows={2}
+                          placeholder="Any special requests..."
+                          disabled={!isOrderingTime()}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+                      {cart.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between p-2 bg-indigo-50 dark:bg-gray-800 rounded-lg">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm text-gray-900 dark:text-gray-100">{item.name}</h4>
+                            <p className="text-indigo-600 dark:text-indigo-300 font-medium text-sm">KES {item.price}</p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(index)}
+                            className="text-pink-500 hover:text-pink-700 p-1"
+                            disabled={!isOrderingTime()}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t pt-4 border-gray-200 dark:border-gray-700">
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="font-semibold text-gray-700 dark:text-gray-200">Total:</span>
+                        <span className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">KES {getTotalPrice()}</span>
+                      </div>
+                      <button
+                        onClick={submitOrder}
+                        disabled={!isOrderingTime() || !customerName.trim() || cart.length === 0}
+                        className={`w-full py-3 px-4 rounded-lg font-medium text-lg transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
+                          isOrderingTime() && customerName.trim() && cart.length > 0
+                            ? 'bg-gradient-to-tr from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                      >
+                        {!isOrderingTime() ? 'Ordering Closed' : 'Submit Order'}
+                      </button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </>
+        )}
       </div>
+      <AnimatePresence>
+        {showAdminLogin && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 relative border border-gray-200 dark:border-gray-700"
+              initial={{ scale: 0.8, y: 100, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.8, y: 100, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            >
+              <button
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white text-xl focus:outline-none"
+                onClick={() => setShowAdminLogin(false)}
+                aria-label="Close"
+              >
+                &times;
+              </button>
+              <h2 className="text-xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Admin Login</h2>
+              <form onSubmit={handleAdminLogin} className="space-y-4">
+                <input
+                  type="password"
+                  value={adminPasswordInput}
+                  onChange={e => setAdminPasswordInput(e.target.value)}
+                  className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                  placeholder="Enter admin password"
+                  autoFocus
+                />
+                {adminError && <div className="text-red-500 text-sm">{adminError}</div>}
+                <button
+                  type="submit"
+                  className="w-full py-2 px-4 rounded-lg font-medium text-lg bg-gradient-to-tr from-blue-600 to-indigo-500 text-white hover:from-blue-700 hover:to-indigo-600 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                >
+                  Login
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-                  <div className="border-t pt-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="font-semibold">Total:</span>
-                      <span className="text-xl font-bold text-blue-600">KES {getTotalPrice()}</span>
-                    </div>
-                    <button
-                      onClick={submitOrder}
-                      disabled={!isOrderingTime() || !customerName.trim() || cart.length === 0}
-                      className={`w-full py-3 px-4 rounded-lg font-medium text-sm ${
-                        isOrderingTime() && customerName.trim() && cart.length > 0
-                          ? 'bg-green-600 text-white hover:bg-green-700'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      {!isOrderingTime() ? 'Ordering Closed' : 'Submit Order'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 export default App;
