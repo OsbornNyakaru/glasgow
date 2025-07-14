@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Users, ShoppingCart, Settings, Download, Plus, Edit3, Trash2, CheckCircle, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
+import { Toaster, toast } from 'react-hot-toast';
 
 // Types
 interface FoodItem {
@@ -339,7 +340,7 @@ function App() {
     setCart([]);
     setCustomerName('');
     setSpecialInstructions('');
-    alert('Order submitted successfully!');
+    toast.success('Order submitted successfully!');
   };
 
   const updateOrderStatus = (orderId: string, status: Order['status']) => {
@@ -528,9 +529,9 @@ function App() {
 
   if (currentView === 'admin') {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 px-2 md:px-4">
         <div className="bg-white shadow-sm border-b">
-          <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="max-w-6xl mx-auto px-2 md:px-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Settings className="w-6 h-6 text-blue-600" />
@@ -572,7 +573,7 @@ function App() {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto p-4">
+        <div className="max-w-6xl mx-auto p-2 md:p-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Orders Section */}
             <div className="bg-white rounded-lg shadow-sm p-6">
@@ -715,7 +716,7 @@ function App() {
         )}
         {editingItem && (
           <AddItemForm
-            onSubmit={updateMenuItem}
+            onSubmit={(item) => updateMenuItem(item as FoodItem)}
             initialItem={editingItem}
             onCancel={() => setEditingItem(null)}
           />
@@ -725,17 +726,17 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 px-2 md:px-4">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-2 md:px-4 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-2 md:gap-0">
             <div className="flex items-center gap-3">
               <ShoppingCart className="w-6 h-6 text-blue-600" />
-              <h1 className="text-xl font-bold">Workshop Food Ordering</h1>
+              <h1 className="text-lg md:text-xl font-bold">Workshop Food Ordering</h1>
             </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-2 md:gap-4 flex-wrap">
+              <div className="flex items-center gap-2 text-xs md:text-sm">
                 <Clock className="w-4 h-4" />
                 <span>{formatTime(currentTime)}</span>
                 <span className={`px-2 py-1 rounded-full text-xs ${
@@ -747,7 +748,7 @@ function App() {
               </div>
               <button
                 onClick={handleAdminClick}
-                className="flex items-center gap-2 bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 text-sm"
+                className="flex items-center gap-2 bg-gray-600 text-white px-3 py-1 rounded-lg hover:bg-gray-700 text-xs md:text-sm"
               >
                 <Settings className="w-4 h-4" />
                 Admin
@@ -757,56 +758,56 @@ function App() {
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto p-4">
+      <div className="max-w-4xl mx-auto p-2 md:p-4">
         <div className="max-w-4xl mx-auto">
           {/* Menu Section - Full Width */}
           <div>
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold mb-4">Today's Menu</h2>
+            <div className="bg-white rounded-lg shadow-sm p-2 md:p-6">
+              <h2 className="text-base md:text-lg font-semibold mb-2 md:mb-4">Today's Menu</h2>
               
               {!isOrderingTime() && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                  <p className="text-red-800 text-sm">
-                    ⚠️ Ordering is currently closed. Orders must be placed before 12:45 PM.
+                <div className="bg-red-50 border border-red-200 rounded-lg p-2 md:p-4 mb-4 md:mb-6">
+                  <p className="text-red-800 text-xs md:text-sm">
+                    ⚠️ Ordering is currently closed. Orders must be placed before {orderClosingTime}.
                   </p>
                 </div>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 {categories.map(category => {
                   const items = groupedMenuItems[category] || [];
                   if (items.length === 0) return null;
                   
                   return (
                     <div key={category}>
-                      <h3 className="text-lg font-medium text-gray-800 mb-3 flex items-center gap-2">
+                      <h3 className="text-base md:text-lg font-medium text-gray-800 mb-2 md:mb-3 flex items-center gap-2">
                         {category === 'Chapati Meals' && '🥖'}
                         {category === 'Rice Meals' && '🍚'}
                         {category === 'Ugali Meals' && '🌽'}
                         {category === 'Special Rice' && '🍛'}
                         {category}
                       </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-3">
                         {items.map(item => (
-                          <div key={item.id} className={`border rounded-lg p-4 ${!item.available ? 'opacity-50' : ''}`}>
-                            <div className="flex gap-3">
+                          <div key={item.id} className={`border rounded-lg p-2 md:p-4 ${!item.available ? 'opacity-50' : ''}`}>
+                            <div className="flex gap-2 md:gap-3">
                               {item.image && (
                                 <img 
                                   src={item.image} 
                                   alt={item.name}
-                                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                                  className="w-14 h-14 md:w-16 md:h-16 object-cover rounded-lg flex-shrink-0"
                                 />
                               )}
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between mb-2">
-                                  <h4 className="font-medium text-gray-900 truncate">{item.name}</h4>
-                                  <span className="text-lg font-bold text-blue-600 ml-2">KES {item.price}</span>
+                                <div className="flex items-start justify-between mb-1 md:mb-2">
+                                  <h4 className="font-medium text-gray-900 truncate text-sm md:text-base">{item.name}</h4>
+                                  <span className="text-base md:text-lg font-bold text-blue-600 ml-2">KES {item.price}</span>
                                 </div>
-                                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{item.description}</p>
+                                <p className="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2">{item.description}</p>
                                 <button
                                   onClick={() => addToCart(item)}
                                   disabled={!item.available || !isOrderingTime()}
-                                  className={`w-full py-2 px-4 rounded-lg text-sm font-medium ${
+                                  className={`w-full py-2 px-2 md:px-4 rounded-lg text-xs md:text-sm font-medium ${
                                     item.available && isOrderingTime()
                                       ? 'bg-blue-600 text-white hover:bg-blue-700'
                                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -941,7 +942,7 @@ function App() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6 relative border border-gray-200 dark:border-gray-700"
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm mx-2 p-2"
               initial={{ scale: 0.8, y: 100, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.8, y: 100, opacity: 0 }}
@@ -976,6 +977,11 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      <Toaster position="top-center" toastOptions={{
+        style: { background: '#fff', color: '#333', fontWeight: 500 },
+        success: { style: { background: '#22c55e', color: '#fff' } },
+        error: { style: { background: '#ef4444', color: '#fff' } },
+      }} />
     </div>
   );
 }
