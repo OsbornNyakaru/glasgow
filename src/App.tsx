@@ -64,86 +64,201 @@ const exportToCSV = (orders: Order[]) => {
 
 // Sample data
 const initialMenuItems: FoodItem[] = [
+  // Chapati-Based Meals
   {
     id: '1',
-    name: 'Chapo Beans/Ndengu',
+    name: 'Chapati with Beans',
     price: 120,
-    description: 'Soft chapati served with beans or green grams (ndengu)',
+    description: 'Soft chapati served with beans',
     available: true,
-    category: 'Main Course',
+    category: 'Chapati Meals',
     image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '2',
-    name: 'Rice Beans/Ndengu',
+    name: 'Chapati with Ndengu',
     price: 120,
-    description: 'Steamed rice served with beans or green grams (ndengu)',
+    description: 'Soft chapati served with green grams (ndengu)',
     available: true,
-    category: 'Main Course',
-    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+    category: 'Chapati Meals',
+    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '3',
-    name: 'Ugali/Rice/Chapati Matumbo',
+    name: 'Chapati with Matumbo',
     price: 140,
-    description: 'Choice of ugali, rice, or chapati served with matumbo (tripe)',
+    description: 'Soft chapati served with matumbo (tripe)',
     available: true,
-    category: 'Main Course',
+    category: 'Chapati Meals',
     image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '4',
-    name: 'Ugali/Rice/Chapati Beef',
+    name: 'Chapati with Beef',
     price: 160,
-    description: 'Choice of ugali, rice, or chapati served with tender beef stew',
+    description: 'Soft chapati served with tender beef stew',
     available: true,
-    category: 'Main Course',
+    category: 'Chapati Meals',
     image: 'https://images.pexels.com/photos/11401287/pexels-photo-11401287.jpeg?auto=compress&cs=tinysrgb&w=400'
   },
   {
     id: '5',
+    name: 'Chapati with Kuku',
+    price: 170,
+    description: 'Soft chapati served with chicken (kuku)',
+    available: true,
+    category: 'Chapati Meals',
+    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '6',
+    name: 'Chapati with Mayai',
+    price: 120,
+    description: 'Soft chapati served with eggs (mayai)',
+    available: true,
+    category: 'Chapati Meals',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '7',
+    name: 'Chapati with Pork',
+    price: 170,
+    description: 'Soft chapati served with pork stew',
+    available: true,
+    category: 'Chapati Meals',
+    image: 'https://images.pexels.com/photos/323682/pexels-photo-323682.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  
+  // Rice-Based Meals
+  {
+    id: '8',
+    name: 'Rice with Beans',
+    price: 120,
+    description: 'Steamed rice served with beans',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '9',
+    name: 'Rice with Ndengu',
+    price: 120,
+    description: 'Steamed rice served with green grams (ndengu)',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '10',
+    name: 'Rice with Matumbo',
+    price: 140,
+    description: 'Steamed rice served with matumbo (tripe)',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '11',
+    name: 'Rice with Beef',
+    price: 160,
+    description: 'Steamed rice served with tender beef stew',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/11401287/pexels-photo-11401287.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '12',
+    name: 'Rice with Kuku',
+    price: 170,
+    description: 'Steamed rice served with chicken (kuku)',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '13',
+    name: 'Rice with Mayai',
+    price: 120,
+    description: 'Steamed rice served with eggs (mayai)',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '14',
+    name: 'Rice with Pork',
+    price: 170,
+    description: 'Steamed rice served with pork stew',
+    available: true,
+    category: 'Rice Meals',
+    image: 'https://images.pexels.com/photos/323682/pexels-photo-323682.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  
+  // Ugali-Based Meals
+  {
+    id: '15',
+    name: 'Ugali with Matumbo',
+    price: 140,
+    description: 'Traditional ugali served with matumbo (tripe)',
+    available: true,
+    category: 'Ugali Meals',
+    image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '16',
+    name: 'Ugali with Beef',
+    price: 160,
+    description: 'Traditional ugali served with tender beef stew',
+    available: true,
+    category: 'Ugali Meals',
+    image: 'https://images.pexels.com/photos/11401287/pexels-photo-11401287.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '17',
+    name: 'Ugali with Kuku',
+    price: 170,
+    description: 'Traditional ugali served with chicken (kuku)',
+    available: true,
+    category: 'Ugali Meals',
+    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '18',
+    name: 'Ugali with Mayai',
+    price: 120,
+    description: 'Traditional ugali served with eggs (mayai)',
+    available: true,
+    category: 'Ugali Meals',
+    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '19',
+    name: 'Ugali with Pork',
+    price: 170,
+    description: 'Traditional ugali served with pork stew',
+    available: true,
+    category: 'Ugali Meals',
+    image: 'https://images.pexels.com/photos/323682/pexels-photo-323682.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  {
+    id: '20',
+    name: 'Ugali with Omena',
+    price: 120,
+    description: 'Traditional ugali served with omena (small dried fish)',
+    available: true,
+    category: 'Ugali Meals',
+    image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
+  },
+  
+  // Special Rice Dishes
+  {
+    id: '21',
     name: 'Pilau',
     price: 140,
     description: 'Fragrant spiced rice cooked with meat and aromatic spices',
     available: true,
-    category: 'Main Course',
+    category: 'Special Rice',
     image: 'https://images.pexels.com/photos/8753657/pexels-photo-8753657.jpeg?auto=compress&cs=tinysrgb&w=400'
-  },
-  {
-    id: '6',
-    name: 'Ugali/Rice/Chapati Kuku',
-    price: 170,
-    description: 'Choice of ugali, rice, or chapati served with chicken (kuku)',
-    available: true,
-    category: 'Main Course',
-    image: 'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg?auto=compress&cs=tinysrgb&w=400'
-  },
-  {
-    id: '7',
-    name: 'Ugali/Rice/Chapati Mayai',
-    price: 120,
-    description: 'Choice of ugali, rice, or chapati served with eggs (mayai)',
-    available: true,
-    category: 'Main Course',
-    image: 'https://images.pexels.com/photos/7625056/pexels-photo-7625056.jpeg?auto=compress&cs=tinysrgb&w=400'
-  },
-  {
-    id: '8',
-    name: 'Ugali/Rice/Chapati Pork',
-    price: 170,
-    description: 'Choice of ugali, rice, or chapati served with pork stew',
-    available: true,
-    category: 'Main Course',
-    image: 'https://images.pexels.com/photos/323682/pexels-photo-323682.jpeg?auto=compress&cs=tinysrgb&w=400'
-  },
-  {
-    id: '9',
-    name: 'Ugali Omena',
-    price: 120,
-    description: 'Traditional ugali served with omena (small dried fish)',
-    available: true,
-    category: 'Main Course',
-    image: 'https://images.pexels.com/photos/6419733/pexels-photo-6419733.jpeg?auto=compress&cs=tinysrgb&w=400'
   }
 ];
 
@@ -345,12 +460,12 @@ function App() {
                       }`}
                       onClick={() => handleItemSelect(item)}
                     >
-                      <div className="flex items-start space-x-4">
+                      <div className="flex items-center space-x-4">
                         {item.image && (
                           <img
                             src={item.image}
                             alt={item.name}
-                            className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                            className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                           />
                         )}
                         <div className="flex-1 min-w-0">
@@ -369,10 +484,6 @@ function App() {
                           {selectedItems.some(selected => selected.id === item.id) && (
                             <CheckCircle className="w-5 h-5 text-orange-600 mx-auto mt-1" />
                           )}
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
                         </div>
                       </div>
                     </div>
@@ -581,10 +692,10 @@ function App() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                           >
                             <option value="">Select category</option>
-                            <option value="Main Course">Main Course</option>
-                            <option value="Snacks">Snacks</option>
-                            <option value="Beverages">Beverages</option>
-                            <option value="Dessert">Dessert</option>
+                            <option value="Chapati Meals">Chapati Meals</option>
+                            <option value="Rice Meals">Rice Meals</option>
+                            <option value="Ugali Meals">Ugali Meals</option>
+                            <option value="Special Rice">Special Rice</option>
                             <option value="Other">Other</option>
                           </select>
                         </div>
