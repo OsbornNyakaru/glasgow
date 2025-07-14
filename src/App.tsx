@@ -701,9 +701,9 @@ function App() {
       </div>
 
       <div className="max-w-4xl mx-auto p-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Menu Section */}
-          <div className="lg:col-span-2">
+        <div className="max-w-4xl mx-auto">
+          {/* Menu Section - Full Width */}
+          <div>
             <div className="bg-white rounded-lg shadow-sm p-6">
               <h2 className="text-lg font-semibold mb-4">Today's Menu</h2>
               
@@ -768,88 +768,97 @@ function App() {
               </div>
             </div>
           </div>
-
-          {/* Cart Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5" />
-                Your Order ({cart.length})
-              </h2>
-              
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Your Name</label>
-                  <input
-                    type="text"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full p-2 border rounded-lg"
-                    placeholder="Enter your name"
-                    disabled={!isOrderingTime()}
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-1">Special Instructions (Optional)</label>
-                  <textarea
-                    value={specialInstructions}
-                    onChange={(e) => setSpecialInstructions(e.target.value)}
-                    className="w-full p-2 border rounded-lg"
-                    rows={2}
-                    placeholder="Any special requests..."
-                    disabled={!isOrderingTime()}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
-                {cart.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">Your cart is empty</p>
-                ) : (
-                  cart.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm">{item.name}</h4>
-                        <p className="text-blue-600 font-medium">KES {item.price}</p>
-                      </div>
-                      <button
-                        onClick={() => removeFromCart(index)}
-                        className="text-red-500 hover:text-red-700 p-1"
-                        disabled={!isOrderingTime()}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {cart.length > 0 && (
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="font-semibold">Total:</span>
-                    <span className="text-xl font-bold text-blue-600">KES {getTotalPrice()}</span>
-                  </div>
-                  <button
-                    onClick={submitOrder}
-                    disabled={!isOrderingTime() || !customerName.trim() || cart.length === 0}
-                    className={`w-full py-3 px-4 rounded-lg font-medium ${
-                      isOrderingTime() && customerName.trim() && cart.length > 0
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                  >
-                    {!isOrderingTime() ? 'Ordering Closed' : 'Submit Order'}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
         </div>
+
+        {/* Floating Cart Button - Only show when cart has items */}
+        {cart.length > 0 && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <div className="relative group">
+              {/* Cart Button */}
+              <button className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2">
+                <ShoppingCart className="w-6 h-6" />
+                <span className="bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center absolute -top-2 -right-2">
+                  {cart.length}
+                </span>
+                <span className="hidden sm:inline-block font-medium">KES {getTotalPrice()}</span>
+              </button>
+
+              {/* Cart Dropdown - Shows on hover */}
+              <div className="absolute bottom-full right-0 mb-2 w-80 bg-white rounded-lg shadow-xl border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <ShoppingCart className="w-5 h-5" />
+                    Your Order ({cart.length})
+                  </h3>
+                  
+                  <div className="space-y-4 mb-6">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Your Name</label>
+                      <input
+                        type="text"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        className="w-full p-2 border rounded-lg text-sm"
+                        placeholder="Enter your name"
+                        disabled={!isOrderingTime()}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Special Instructions (Optional)</label>
+                      <textarea
+                        value={specialInstructions}
+                        onChange={(e) => setSpecialInstructions(e.target.value)}
+                        className="w-full p-2 border rounded-lg text-sm"
+                        rows={2}
+                        placeholder="Any special requests..."
+                        disabled={!isOrderingTime()}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+                    {cart.map((item, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-sm">{item.name}</h4>
+                          <p className="text-blue-600 font-medium text-sm">KES {item.price}</p>
+                        </div>
+                        <button
+                          onClick={() => removeFromCart(index)}
+                          className="text-red-500 hover:text-red-700 p-1"
+                          disabled={!isOrderingTime()}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
       </div>
     </div>
   );
 }
 
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="font-semibold">Total:</span>
+                      <span className="text-xl font-bold text-blue-600">KES {getTotalPrice()}</span>
+                    </div>
+                    <button
+                      onClick={submitOrder}
+                      disabled={!isOrderingTime() || !customerName.trim() || cart.length === 0}
+                      className={`w-full py-3 px-4 rounded-lg font-medium text-sm ${
+                        isOrderingTime() && customerName.trim() && cart.length > 0
+                          ? 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      {!isOrderingTime() ? 'Ordering Closed' : 'Submit Order'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 export default App;
