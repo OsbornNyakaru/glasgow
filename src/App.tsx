@@ -64,7 +64,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '1',
     name: 'Chapati with Beans',
-    price: 120,
+    price: 130,
     description: 'Soft chapati served with delicious cooked beans',
     available: true,
     category: 'Chapati Meals',
@@ -73,7 +73,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '2',
     name: 'Chapati with Ndengu',
-    price: 120,
+    price: 130,
     description: 'Fresh chapati with nutritious green gram (ndengu)',
     available: true,
     category: 'Chapati Meals',
@@ -82,7 +82,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '3',
     name: 'Chapati with Matumbo',
-    price: 140,
+    price: 150,
     description: 'Chapati served with well-prepared matumbo (tripe)',
     available: true,
     category: 'Chapati Meals',
@@ -91,7 +91,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '4',
     name: 'Chapati with Beef',
-    price: 160,
+    price: 170,
     description: 'Soft chapati with tender beef stew',
     available: true,
     category: 'Chapati Meals',
@@ -100,7 +100,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '5',
     name: 'Chapati with Kuku',
-    price: 170,
+    price: 180,
     description: 'Chapati served with flavorful chicken (kuku)',
     available: true,
     category: 'Chapati Meals',
@@ -109,7 +109,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '6',
     name: 'Chapati with Mayai',
-    price: 120,
+    price: 130,
     description: 'Chapati with scrambled eggs (mayai)',
     available: true,
     category: 'Chapati Meals',
@@ -118,7 +118,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '7',
     name: 'Chapati with Pork',
-    price: 170,
+    price: 180,
     description: 'Chapati served with succulent pork',
     available: true,
     category: 'Chapati Meals',
@@ -129,7 +129,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '8',
     name: 'Rice with Beans',
-    price: 120,
+    price: 130,
     description: 'Steamed rice served with cooked beans',
     available: true,
     category: 'Rice Meals',
@@ -138,7 +138,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '9',
     name: 'Rice with Ndengu',
-    price: 120,
+    price: 130,
     description: 'White rice with green gram (ndengu)',
     available: true,
     category: 'Rice Meals',
@@ -147,7 +147,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '10',
     name: 'Rice with Matumbo',
-    price: 140,
+    price: 150,
     description: 'Rice served with well-prepared matumbo',
     available: true,
     category: 'Rice Meals',
@@ -156,7 +156,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '11',
     name: 'Rice with Beef',
-    price: 160,
+    price: 170,
     description: 'Steamed rice with tender beef stew',
     available: true,
     category: 'Rice Meals',
@@ -165,7 +165,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '12',
     name: 'Rice with Kuku',
-    price: 170,
+    price: 180,
     description: 'Rice served with chicken (kuku)',
     available: true,
     category: 'Rice Meals',
@@ -174,7 +174,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '13',
     name: 'Rice with Mayai',
-    price: 120,
+    price: 130,
     description: 'Rice with scrambled eggs',
     available: true,
     category: 'Rice Meals',
@@ -183,7 +183,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '14',
     name: 'Rice with Pork',
-    price: 170,
+    price: 180,
     description: 'Rice served with pork',
     available: true,
     category: 'Rice Meals',
@@ -194,7 +194,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '15',
     name: 'Ugali with Matumbo',
-    price: 140,
+    price: 150,
     description: 'Traditional ugali with matumbo',
     available: true,
     category: 'Ugali Meals',
@@ -203,7 +203,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '16',
     name: 'Ugali with Beef',
-    price: 160,
+    price: 170,
     description: 'Ugali served with beef stew',
     available: true,
     category: 'Ugali Meals',
@@ -212,7 +212,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '17',
     name: 'Ugali with Kuku',
-    price: 170,
+    price: 180,
     description: 'Ugali with chicken',
     available: true,
     category: 'Ugali Meals',
@@ -221,7 +221,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '18',
     name: 'Ugali with Mayai',
-    price: 120,
+    price: 130,
     description: 'Ugali with eggs',
     available: true,
     category: 'Ugali Meals',
@@ -230,7 +230,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '19',
     name: 'Ugali with Pork',
-    price: 170,
+    price: 180,
     description: 'Ugali served with pork',
     available: true,
     category: 'Ugali Meals',
@@ -239,7 +239,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '20',
     name: 'Ugali with Omena',
-    price: 120,
+    price: 130,
     description: 'Traditional ugali with omena (small fish)',
     available: true,
     category: 'Ugali Meals',
@@ -250,7 +250,7 @@ const initialMenuItems: FoodItem[] = [
   {
     id: '21',
     name: 'Pilau',
-    price: 140,
+    price: 150,
     description: 'Aromatic spiced rice (pilau)',
     available: true,
     category: 'Special Rice',
