@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import { Toaster, toast } from 'react-hot-toast';
 import { db } from './firebase';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 
 // Types
 interface FoodItem {
@@ -318,6 +318,25 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
+  // Firestore: Listen for real-time updates to orders
+  useEffect(() => {
+    const ordersCol = collection(db, 'orders');
+    const unsub = onSnapshot(ordersCol, (snapshot) => {
+      const orderList: Order[] = snapshot.docs.map(docSnap => ({ ...docSnap.data(), id: docSnap.id }) as Order);
+      orderList.sort((a, b) => {
+        const getTime = (ts: any) => {
+          if (typeof ts === 'number') return ts;
+          if (ts && typeof ts.toDate === 'function') return ts.toDate().getTime();
+          if (ts instanceof Date) return ts.getTime();
+          return 0;
+        };
+        return getTime(b.timestamp) - getTime(a.timestamp);
+      });
+      setOrders(orderList);
+    });
+    return () => unsub();
+  }, []);
+
   const addToCart = (item: FoodItem) => {
     if (!isOrderingTime()) {
       alert('Ordering is closed. Orders must be placed before 12:45 PM.');
@@ -334,40 +353,57 @@ function App() {
     return cart.reduce((total, item) => total + item.price, 0);
   };
 
-  const submitOrder = () => {
+  // Firestore: Submit order
+  const submitOrder = async () => {
     if (!customerName.trim()) {
-      alert('Please enter your name');
+      toast.error('Please enter your name');
       return;
     }
     if (cart.length === 0) {
-      alert('Please add items to your cart');
+      toast.error('Please add items to your cart');
       return;
     }
     if (!isOrderingTime()) {
-      alert('Ordering is closed. Orders must be placed before 12:45 PM.');
+      toast.error('Ordering is closed. Orders must be placed before ' + orderClosingTime + '.');
       return;
     }
-
-    const newOrder: Order = {
-      id: Date.now().toString(),
+    const newOrder = {
       customerName: customerName.trim(),
       items: [...cart],
       specialInstructions: specialInstructions.trim(),
-      timestamp: getCurrentTime(),
-      status: 'pending'
+      timestamp: Date.now(),
+      status: 'pending',
     };
-
-    setOrders([...orders, newOrder]);
-    setCart([]);
-    setCustomerName('');
-    setSpecialInstructions('');
-    toast.success('Order submitted successfully!');
+    try {
+      await addDoc(collection(db, 'orders'), newOrder);
+      setCart([]);
+      setCustomerName('');
+      setSpecialInstructions('');
+      toast.success('Order submitted successfully!');
+    } catch (err) {
+      toast.error('Failed to submit order.');
+    }
   };
 
-  const updateOrderStatus = (orderId: string, status: Order['status']) => {
-    setOrders(orders.map(order => 
-      order.id === orderId ? { ...order, status } : order
-    ));
+  // Firestore: Update order status
+  const updateOrderStatus = async (orderId: string, status: Order['status']) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, { status });
+    } catch (err) {
+      toast.error('Failed to update order status.');
+    }
+  };
+
+  // Firestore: Delete order
+  const deleteOrder = async (orderId: string) => {
+    if (!window.confirm('Are you sure you want to delete this order?')) return;
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await deleteDoc(orderRef);
+    } catch (err) {
+      toast.error('Failed to delete order.');
+    }
   };
 
   const addMenuItem = (item: Omit<FoodItem, 'id'>) => {
@@ -648,6 +684,13 @@ function App() {
                             <CheckCircle className="w-4 h-4" />
                           </button>
                         </div>
+                        <button
+                          onClick={() => deleteOrder(order.id)}
+                          className="ml-2 p-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-xs"
+                          title="Delete Order"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                       <div className="text-xs md:text-sm">
                         <p className="mb-1">
