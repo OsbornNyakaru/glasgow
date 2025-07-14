@@ -938,22 +938,22 @@ function App() {
                     </h3>
                     <div className="space-y-4 mb-6">
                       <div>
-                        <label className="block text-sm font-medium mb-1">Your Name</label>
+                        <label className="block text-sm font-medium mb-1 text-white">Your Name</label>
                         <input
                           type="text"
                           value={customerName}
                           onChange={(e) => setCustomerName(e.target.value)}
-                          className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                          className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400 text-white placeholder-white"
                           placeholder="Enter your name"
                           disabled={!isOrderingTime()}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium mb-1">Special Instructions (Optional)</label>
+                        <label className="block text-sm font-medium mb-1 text-white">Special Instructions (Optional)</label>
                         <textarea
                           value={specialInstructions}
                           onChange={(e) => setSpecialInstructions(e.target.value)}
-                          className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                          className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400 text-white placeholder-white"
                           rows={2}
                           placeholder="Any special requests..."
                           disabled={!isOrderingTime()}
