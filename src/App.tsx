@@ -1055,6 +1055,50 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {showAdminLogin && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-sm mx-2 p-2"
+              initial={{ scale: 0.8, y: 100, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.8, y: 100, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            >
+              <button
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white text-xl focus:outline-none"
+                onClick={() => setShowAdminLogin(false)}
+                aria-label="Close"
+              >
+                &times;
+              </button>
+              <h2 className="text-xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Admin Login</h2>
+              <form onSubmit={handleAdminLogin} className="space-y-4">
+                <input
+                  type="password"
+                  value={adminPasswordInput}
+                  onChange={e => setAdminPasswordInput(e.target.value)}
+                  className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                  placeholder="Enter admin password"
+                  autoFocus
+                />
+                {adminError && <div className="text-red-500 text-sm">{adminError}</div>}
+                <button
+                  type="submit"
+                  className="w-full py-2 px-4 rounded-lg font-medium text-lg bg-gradient-to-tr from-blue-600 to-indigo-500 text-white hover:from-blue-700 hover:to-indigo-600 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                >
+                  Login
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Toaster position="top-center" toastOptions={{
         style: { background: '#fff', color: '#333', fontWeight: 500 },
         success: { style: { background: '#22c55e', color: '#fff' } },
