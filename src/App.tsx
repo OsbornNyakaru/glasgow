@@ -405,7 +405,8 @@ function App() {
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
       if (initialItem) {
-        onSubmit({ ...initialItem, ...formData });
+        // Always include id when editing
+        onSubmit({ ...initialItem, ...formData, id: initialItem.id });
       } else {
         onSubmit(formData);
       }
