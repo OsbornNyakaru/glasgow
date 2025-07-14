@@ -3,6 +3,8 @@ import { Clock, Users, ShoppingCart, Settings, Download, Plus, Edit3, Trash2, Ch
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import { Toaster, toast } from 'react-hot-toast';
+import { db } from './firebase';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 
 // Types
 interface FoodItem {
@@ -260,9 +262,7 @@ function App() {
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
   const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [editingItem, setEditingItem] = useState<FoodItem | null>(null);
-  const [orderClosingTime, setOrderClosingTime] = useState(() => {
-    return localStorage.getItem('orderClosingTime') || '12:45';
-  });
+  const [orderClosingTime, setOrderClosingTime] = useState('12:45');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [adminAuth, setAdminAuth] = useState(() => sessionStorage.getItem('adminAuth') === 'true');
   const [showAdminLogin, setShowAdminLogin] = useState(false);
@@ -284,10 +284,19 @@ function App() {
     return now < cutoffTime;
   };
 
-  // Persist closing time to localStorage
+  // Firestore: Listen for real-time updates to closing time
   useEffect(() => {
-    localStorage.setItem('orderClosingTime', orderClosingTime);
-  }, [orderClosingTime]);
+    const closingTimeDoc = doc(db, 'settings', 'orderClosingTime');
+    const unsubscribe = onSnapshot(closingTimeDoc, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data && data.value) {
+          setOrderClosingTime(data.value);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Update time every minute
   useEffect(() => {
@@ -528,6 +537,14 @@ function App() {
     }
   };
 
+  // Firestore: Update closing time in Firestore when admin changes it
+  const handleClosingTimeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = e.target.value;
+    setOrderClosingTime(newTime);
+    const closingTimeDoc = doc(db, 'settings', 'orderClosingTime');
+    await setDoc(closingTimeDoc, { value: newTime });
+  };
+
   if (currentView === 'admin') {
     return (
       <div className="min-h-screen bg-gray-50 px-2 md:px-4">
@@ -566,7 +583,7 @@ function App() {
               <input
                 type="time"
                 value={orderClosingTime}
-                onChange={e => setOrderClosingTime(e.target.value)}
+                onChange={handleClosingTimeChange}
                 className="border rounded px-2 py-1"
               />
               <span className="text-gray-600">Current: {orderClosingTime}</span>
