@@ -260,7 +260,7 @@ const initialMenuItems: FoodItem[] = [
 
 function App() {
   const [currentView, setCurrentView] = useState<'customer' | 'admin'>('customer');
-  const [menuItems, setMenuItems] = useState<FoodItem[]>(initialMenuItems);
+  const [menuItems, setMenuItems] = useState<FoodItem[]>([]);
   const [cart, setCart] = useState<FoodItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [customerName, setCustomerName] = useState('');
@@ -361,7 +361,8 @@ function App() {
         console.error('Error initializing menu:', error);
         toast.error('Failed to load menu items');
         // Fallback to local menu items if Firebase fails
-        setMenuItems(initialMenuItems);
+        // Only set initial items if we have no items at all
+        setMenuItems(prevItems => prevItems.length === 0 ? initialMenuItems : prevItems);
         setMenuLoaded(true);
       }
     };
@@ -374,7 +375,6 @@ function App() {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, []); // Empty dependency array to run only once
   // Update time every minute
   useEffect(() => {
     const timer = setInterval(() => {
