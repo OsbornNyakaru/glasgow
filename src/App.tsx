@@ -68,7 +68,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Soft chapati served with delicious cooked beans',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-beans.png'
   },
   {
     id: '2',
@@ -77,7 +77,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Fresh chapati with nutritious green gram (ndengu)',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-greengrams.jpg'
   },
   {
     id: '3',
@@ -86,7 +86,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Chapati served with well-prepared matumbo (tripe)',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-matumbo.jpg'
   },
   {
     id: '4',
@@ -95,7 +95,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Soft chapati with tender beef stew',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-beef.jpg'
   },
   {
     id: '5',
@@ -104,7 +104,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Chapati served with flavorful chicken (kuku)',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-chicken.jpg'
   },
   {
     id: '6',
@@ -113,7 +113,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Chapati with scrambled eggs (mayai)',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-eggs.jpg'
   },
   {
     id: '7',
@@ -122,7 +122,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Chapati served with succulent pork',
     available: true,
     category: 'Chapati Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/chapo-pork.jpg'
   },
 
   // Rice Meals
@@ -225,7 +225,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Ugali with eggs',
     available: true,
     category: 'Ugali Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/ugali-eggs.jpg'
   },
   {
     id: '19',
@@ -234,7 +234,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Ugali served with pork',
     available: true,
     category: 'Ugali Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/ugali-pork.jpg'
   },
   {
     id: '20',
@@ -254,7 +254,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Aromatic spiced rice (pilau)',
     available: true,
     category: 'Special Rice',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/pilau-image.jpg'
   }
 ];
 
