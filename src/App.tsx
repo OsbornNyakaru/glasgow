@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import { Toaster, toast } from 'react-hot-toast';
 import { db } from './firebase';
-import { collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, getDocs } from 'firebase/firestore';
 
 // Types
 interface FoodItem {
@@ -277,6 +277,7 @@ function App() {
   const [adminError, setAdminError] = useState('');
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
   const [selectedMeal, setSelectedMeal] = useState<FoodItem | null>(null);
+  const [menuLoaded, setMenuLoaded] = useState(false);
 
   // Helper to parse closing time string ("HH:mm") into a Date object for today
   const getClosingDate = () => {
@@ -317,6 +318,62 @@ function App() {
     return () => { if (unsub) unsub(); };
   }, []);
 
+  // Firestore: Initialize and listen for real-time updates to menu items
+  useEffect(() => {
+    const menuCol = collection(db, 'menuItems');
+    
+    const initializeMenu = async () => {
+      try {
+        // Check if menu items exist in Firestore
+        const menuSnapshot = await getDocs(menuCol);
+        
+        if (menuSnapshot.empty) {
+          // If no menu items exist, populate with initial data
+          console.log('Initializing menu items in Firestore...');
+          const batch = [];
+          for (const item of initialMenuItems) {
+            batch.push(addDoc(menuCol, item));
+          }
+          await Promise.all(batch);
+          toast.success('Menu initialized successfully!');
+        }
+        
+        // Set up real-time listener for menu items
+        const unsub = onSnapshot(menuCol, (snapshot) => {
+          const menuList: FoodItem[] = snapshot.docs.map(docSnap => ({ 
+            ...docSnap.data(), 
+            id: docSnap.id 
+          }) as FoodItem);
+          
+          // Sort menu items by category and name for consistent display
+          menuList.sort((a, b) => {
+            if (a.category !== b.category) {
+              return a.category.localeCompare(b.category);
+            }
+            return a.name.localeCompare(b.name);
+          });
+          
+          setMenuItems(menuList);
+          setMenuLoaded(true);
+        });
+        
+        return unsub;
+      } catch (error) {
+        console.error('Error initializing menu:', error);
+        toast.error('Failed to load menu items');
+        setMenuLoaded(true);
+      }
+    };
+    
+    let unsubscribe: (() => void) | undefined;
+    initializeMenu().then(unsub => {
+      unsubscribe = unsub;
+    });
+    
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, []);
   // Update time every minute
   useEffect(() => {
     const timer = setInterval(() => {
@@ -413,32 +470,60 @@ function App() {
     }
   };
 
-  const addMenuItem = (item: Omit<FoodItem, 'id'>) => {
-    const newItem: FoodItem = {
-      ...item,
-      id: Date.now().toString()
-    };
-    setMenuItems([...menuItems, newItem]);
-    setShowAddItemForm(false);
-  };
-
-  const updateMenuItem = (updatedItem: FoodItem) => {
-    setMenuItems(menuItems.map(item => 
-      item.id === updatedItem.id ? updatedItem : item
-    ));
-    setEditingItem(null);
-  };
-
-  const deleteMenuItem = (itemId: string) => {
-    if (confirm('Are you sure you want to delete this item?')) {
-      setMenuItems(menuItems.filter(item => item.id !== itemId));
+  // Firestore: Add menu item
+  const addMenuItem = async (item: Omit<FoodItem, 'id'>) => {
+    try {
+      await addDoc(collection(db, 'menuItems'), item);
+      setShowAddItemForm(false);
+      toast.success('Menu item added successfully!');
+    } catch (error) {
+      console.error('Error adding menu item:', error);
+      toast.error('Failed to add menu item');
     }
   };
 
-  const toggleItemAvailability = (itemId: string) => {
-    setMenuItems(menuItems.map(item => 
-      item.id === itemId ? { ...item, available: !item.available } : item
-    ));
+  // Firestore: Update menu item
+  const updateMenuItem = async (updatedItem: FoodItem) => {
+    try {
+      const { id, ...itemData } = updatedItem;
+      const itemRef = doc(db, 'menuItems', id);
+      await updateDoc(itemRef, itemData);
+      setEditingItem(null);
+      toast.success('Menu item updated successfully!');
+    } catch (error) {
+      console.error('Error updating menu item:', error);
+      toast.error('Failed to update menu item');
+    }
+  };
+
+  // Firestore: Delete menu item
+  const deleteMenuItem = async (itemId: string) => {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+    
+    try {
+      const itemRef = doc(db, 'menuItems', itemId);
+      await deleteDoc(itemRef);
+      toast.success('Menu item deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+      toast.error('Failed to delete menu item');
+    }
+  };
+
+  // Firestore: Toggle item availability
+  const toggleItemAvailability = async (itemId: string) => {
+    try {
+      const item = menuItems.find(item => item.id === itemId);
+      if (!item) return;
+      
+      const itemRef = doc(db, 'menuItems', itemId);
+      await updateDoc(itemRef, { available: !item.available });
+      
+      toast.success(`${item.name} is now ${!item.available ? 'available' : 'unavailable'}`);
+    } catch (error) {
+      console.error('Error updating item availability:', error);
+      toast.error('Failed to update item availability');
+    }
   };
 
   // Group menu items by category
@@ -604,8 +689,15 @@ function App() {
     }
   };
 
-  if (!closingTimeLoaded) {
-    return <div className="flex items-center justify-center min-h-screen text-lg text-gray-500">Loading...</div>;
+  if (!closingTimeLoaded || !menuLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-gray-500">Loading menu...</p>
+        </div>
+      </div>
+    );
   }
 
   if (currentView === 'admin') {
