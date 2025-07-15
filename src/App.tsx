@@ -72,7 +72,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '2',
-    name: 'Chapati with Ndengu',
+    name: 'Chapati with Greengrams',
     price: 130,
     description: 'Fresh chapati with nutritious green gram (ndengu)',
     available: true,
@@ -99,7 +99,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '5',
-    name: 'Chapati with Kuku',
+    name: 'Chapati with Chicken',
     price: 180,
     description: 'Chapati served with flavorful chicken (kuku)',
     available: true,
@@ -108,7 +108,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '6',
-    name: 'Chapati with Mayai',
+    name: 'Chapati with Eggs',
     price: 130,
     description: 'Chapati with scrambled eggs (mayai)',
     available: true,
@@ -137,7 +137,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '9',
-    name: 'Rice with Ndengu',
+    name: 'Rice with Greengrams',
     price: 130,
     description: 'White rice with green gram (ndengu)',
     available: true,
@@ -148,7 +148,7 @@ const initialMenuItems: FoodItem[] = [
     id: '10',
     name: 'Rice with Matumbo',
     price: 150,
-    description: 'Rice served with well-prepared matumbo',
+    description: 'Rice served with well-prepared matumbo (tripe)',
     available: true,
     category: 'Rice Meals',
     image: '../assets/images/matumbo-rice.jpg'
@@ -164,7 +164,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '12',
-    name: 'Rice with Kuku',
+    name: 'Rice with Chicken',
     price: 180,
     description: 'Rice served with chicken (kuku)',
     available: true,
@@ -173,7 +173,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '13',
-    name: 'Rice with Mayai',
+    name: 'Rice with Eggs',
     price: 130,
     description: 'Rice with scrambled eggs',
     available: true,
@@ -195,7 +195,7 @@ const initialMenuItems: FoodItem[] = [
     id: '15',
     name: 'Ugali with Matumbo',
     price: 150,
-    description: 'Traditional ugali with matumbo',
+    description: 'Traditional ugali with matumbo (tripe)',
     available: true,
     category: 'Ugali Meals',
     image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
@@ -211,7 +211,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '17',
-    name: 'Ugali with Kuku',
+    name: 'Ugali with Chicken',
     price: 180,
     description: 'Ugali with chicken',
     available: true,
@@ -220,7 +220,7 @@ const initialMenuItems: FoodItem[] = [
   },
   {
     id: '18',
-    name: 'Ugali with Mayai',
+    name: 'Ugali with Eggs',
     price: 130,
     description: 'Ugali with eggs',
     available: true,
