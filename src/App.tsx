@@ -284,6 +284,7 @@ function App() {
   const [vendorPhoneLoaded, setVendorPhoneLoaded] = useState(false);
   const [vendorPhoneEdit, setVendorPhoneEdit] = useState('');
   const [vendorPhoneSaving, setVendorPhoneSaving] = useState(false);
+  const [bulkActionLoading, setBulkActionLoading] = useState(false);
 
   // Helper to parse closing time string ("HH:mm") into a Date object for today
   const getClosingDate = () => {
@@ -876,13 +877,62 @@ function App() {
             <div className="bg-white rounded-lg shadow-sm p-2 md:p-6">
               <div className="flex flex-wrap items-center justify-between mb-2 md:mb-4 gap-2">
                 <h2 className="text-base md:text-lg font-semibold">Menu Management</h2>
-                <button
-                  onClick={() => setShowAddItemForm(true)}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 text-xs md:text-base"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Item
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={async () => {
+                      setBulkActionLoading(true);
+                      try {
+                        const menuCol = collection(db, 'menuItems');
+                        const snapshot = await getDocs(menuCol);
+                        const batch: Promise<void>[] = [];
+                        snapshot.forEach(docSnap => {
+                          batch.push(updateDoc(doc(db, 'menuItems', docSnap.id), { available: false }));
+                        });
+                        await Promise.all(batch);
+                        toast.success('All items marked as unavailable!');
+                      } catch (err) {
+                        toast.error('Failed to mark all unavailable');
+                      } finally {
+                        setBulkActionLoading(false);
+                      }
+                    }}
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-xs md:text-base"
+                    disabled={bulkActionLoading}
+                  >
+                    Mark All Unavailable
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setBulkActionLoading(true);
+                      try {
+                        const menuCol = collection(db, 'menuItems');
+                        const snapshot = await getDocs(menuCol);
+                        const batch: Promise<void>[] = [];
+                        snapshot.forEach(docSnap => {
+                          batch.push(updateDoc(doc(db, 'menuItems', docSnap.id), { available: true }));
+                        });
+                        await Promise.all(batch);
+                        toast.success('All items marked as available!');
+                      } catch (err) {
+                        toast.error('Failed to mark all available');
+                      } finally {
+                        setBulkActionLoading(false);
+                      }
+                    }}
+                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-xs md:text-base"
+                    disabled={bulkActionLoading}
+                  >
+                    Mark All Available
+                  </button>
+                  <button
+                    onClick={() => setShowAddItemForm(true)}
+                    className="flex items-center gap-2 bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 text-xs md:text-base"
+                    disabled={bulkActionLoading}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add Item
+                  </button>
+                </div>
               </div>
               <div className="space-y-2 md:space-y-4 max-h-96 overflow-y-auto">
                 {categories.map(category => {
