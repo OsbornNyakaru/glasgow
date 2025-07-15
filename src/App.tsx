@@ -110,7 +110,7 @@ const initialMenuItems: FoodItem[] = [
     id: '6',
     name: 'Chapati with Eggs',
     price: 130,
-    description: 'Chapati with scrambled eggs (mayai)',
+    description: 'Chapati with fried eggs (mayai)',
     available: true,
     category: 'Chapati Meals',
     image: '../assets/images/chapo-eggs.jpg'
@@ -175,7 +175,7 @@ const initialMenuItems: FoodItem[] = [
     id: '13',
     name: 'Rice with Eggs',
     price: 130,
-    description: 'Rice with scrambled eggs',
+    description: 'Rice with fried eggs',
     available: true,
     category: 'Rice Meals',
     image: '../assets/images/common.jpg'
