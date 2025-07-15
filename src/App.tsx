@@ -285,6 +285,9 @@ function App() {
   const [vendorPhoneEdit, setVendorPhoneEdit] = useState('');
   const [vendorPhoneSaving, setVendorPhoneSaving] = useState(false);
   const [bulkActionLoading, setBulkActionLoading] = useState(false);
+  const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
+  const [editingPriceValue, setEditingPriceValue] = useState<number | null>(null);
+  const [priceSaving, setPriceSaving] = useState<string | null>(null);
 
   // Helper to parse closing time string ("HH:mm") into a Date object for today
   const getClosingDate = () => {
@@ -924,14 +927,6 @@ function App() {
                   >
                     Mark All Available
                   </button>
-                  <button
-                    onClick={() => setShowAddItemForm(true)}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 text-xs md:text-base"
-                    disabled={bulkActionLoading}
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Item
-                  </button>
                 </div>
               </div>
               <div className="space-y-2 md:space-y-4 max-h-96 overflow-y-auto">
@@ -954,7 +949,70 @@ function App() {
                               )}
                               <div>
                                 <h4 className="font-medium text-xs md:text-base">{item.name}</h4>
-                                <p className="text-xs md:text-sm text-gray-600">KES {item.price}</p>
+                                {editingPriceId === item.id ? (
+                                  <div className="flex items-center gap-2">
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      className="w-20 p-1 border rounded text-xs md:text-sm text-gray-600"
+                                      value={editingPriceValue ?? item.price}
+                                      onChange={e => {
+                                        const val = e.target.value;
+                                        setEditingPriceValue(val === '' ? 0 : Number(val));
+                                      }}
+                                      autoFocus
+                                    />
+                                    <button
+                                      className="bg-green-600 text-white px-2 py-1 rounded text-xs hover:bg-green-700 disabled:opacity-50"
+                                      disabled={
+                                        priceSaving === item.id ||
+                                        editingPriceValue === null ||
+                                        editingPriceValue < 0 ||
+                                        editingPriceValue === item.price
+                                      }
+                                      onClick={async () => {
+                                        if (editingPriceValue === null || editingPriceValue < 0 || editingPriceValue === item.price) return;
+                                        setPriceSaving(item.id);
+                                        try {
+                                          await updateDoc(doc(db, 'menuItems', item.id), { price: editingPriceValue });
+                                          toast.success('Price updated!');
+                                          setEditingPriceId(null);
+                                          setEditingPriceValue(null);
+                                        } catch (err) {
+                                          toast.error('Failed to update price');
+                                        } finally {
+                                          setPriceSaving(null);
+                                        }
+                                      }}
+                                    >
+                                      {priceSaving === item.id ? 'Saving...' : 'Save'}
+                                    </button>
+                                    <button
+                                      className="bg-gray-300 text-gray-700 px-2 py-1 rounded text-xs hover:bg-gray-400"
+                                      onClick={() => {
+                                        setEditingPriceId(null);
+                                        setEditingPriceValue(null);
+                                      }}
+                                      disabled={priceSaving === item.id}
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs md:text-sm text-gray-600">KES {item.price}</span>
+                                    <button
+                                      className="p-1 text-blue-600 hover:text-blue-800"
+                                      onClick={() => {
+                                        setEditingPriceId(item.id);
+                                        setEditingPriceValue(item.price);
+                                      }}
+                                      title="Edit Price"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3zm0 0v3h3" /></svg>
+                                    </button>
+                                  </div>
+                                )}
                               </div>
                             </div>
                             <div className="flex items-center gap-1 md:gap-2">
@@ -964,13 +1022,6 @@ function App() {
                                 title={item.available ? 'Available' : 'Unavailable'}
                               >
                                 {item.available ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                              </button>
-                              <button
-                                onClick={() => setEditingItem(item)}
-                                className="p-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
-                                title="Edit Item"
-                              >
-                                <Edit3 className="w-4 h-4" />
                               </button>
                               <button
                                 onClick={() => deleteMenuItem(item.id)}
