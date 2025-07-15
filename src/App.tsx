@@ -1176,7 +1176,7 @@ function App() {
                   type="password"
                   value={adminPasswordInput}
                   onChange={e => setAdminPasswordInput(e.target.value)}
-                  className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400 text-white placeholder-white"
                   placeholder="Enter admin password"
                   autoFocus
                 />
