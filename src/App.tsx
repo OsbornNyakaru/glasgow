@@ -151,7 +151,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Rice served with well-prepared matumbo',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/matumbo-rice.jpg'
   },
   {
     id: '11',
@@ -169,7 +169,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Rice served with chicken (kuku)',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/rice-chicken.jpg'
   },
   {
     id: '13',
