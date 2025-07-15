@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Clock, Users, ShoppingCart, Settings, Download, Plus, Edit3, Trash2, CheckCircle, XCircle } from 'lucide-react';
+import { Clock, Users, ShoppingCart, Settings, Download, Plus, Edit3, Trash2, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as XLSX from 'xlsx';
 import { Toaster, toast } from 'react-hot-toast';
@@ -133,7 +133,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Steamed rice served with cooked beans',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '9',
@@ -142,7 +142,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'White rice with green gram (ndengu)',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '10',
@@ -160,7 +160,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Steamed rice with tender beef stew',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '12',
@@ -178,7 +178,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Rice with scrambled eggs',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '14',
@@ -187,7 +187,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Rice served with pork',
     available: true,
     category: 'Rice Meals',
-    image: 'https://images.pexels.com/photos/343871/pexels-photo-343871.jpeg'
+    image: '../assets/images/common.jpg'
   },
 
   // Ugali Meals
@@ -198,7 +198,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Traditional ugali with matumbo (tripe)',
     available: true,
     category: 'Ugali Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '16',
@@ -207,7 +207,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Ugali served with beef stew',
     available: true,
     category: 'Ugali Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '17',
@@ -216,7 +216,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Ugali with chicken',
     available: true,
     category: 'Ugali Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/common.jpg'
   },
   {
     id: '18',
@@ -243,7 +243,7 @@ const initialMenuItems: FoodItem[] = [
     description: 'Traditional ugali with omena (small fish)',
     available: true,
     category: 'Ugali Meals',
-    image: 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg'
+    image: '../assets/images/common.jpg'
   },
 
   // Special Rice
@@ -275,6 +275,7 @@ function App() {
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminPasswordInput, setAdminPasswordInput] = useState('');
   const [adminError, setAdminError] = useState('');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
   const [selectedMeal, setSelectedMeal] = useState<FoodItem | null>(null);
   const [menuLoaded, setMenuLoaded] = useState(false);
@@ -410,7 +411,7 @@ function App() {
   // Firestore: Listen for real-time updates to vendor phone number
   useEffect(() => {
     const phoneDoc = doc(db, 'settings', 'vendorPhone');
-    let unsub;
+    let unsub: (() => void) | undefined;
     (async () => {
       const snap = await getDoc(phoneDoc);
       if (!snap.exists()) {
@@ -1248,21 +1249,41 @@ function App() {
               </button>
               <h2 className="text-xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Admin Login</h2>
               <form onSubmit={handleAdminLogin} className="space-y-4">
-                <input
-                  type="password"
-                  value={adminPasswordInput}
-                  onChange={e => setAdminPasswordInput(e.target.value)}
-                  className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400 text-white placeholder-white"
-                  placeholder="Enter admin password"
-                  autoFocus
-                />
+                <div className="relative">
+                  <input
+                    type={showAdminPassword ? "text" : "password"}
+                    value={adminPasswordInput}
+                    onChange={e => setAdminPasswordInput(e.target.value)}
+                    className="w-full p-2 border rounded-lg text-sm bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-indigo-400 text-white placeholder-white pr-10"
+                    placeholder="Enter admin password"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                    onClick={() => setShowAdminPassword(v => !v)}
+                    tabIndex={-1}
+                    aria-label={showAdminPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showAdminPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
                 {adminError && <div className="text-red-500 text-sm">{adminError}</div>}
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 rounded-lg font-medium text-lg bg-gradient-to-tr from-blue-600 to-indigo-500 text-white hover:from-blue-700 hover:to-indigo-600 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                >
-                  Login
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="w-full py-2 px-4 rounded-lg font-medium text-lg bg-gradient-to-tr from-blue-600 to-indigo-500 text-white hover:from-blue-700 hover:to-indigo-600 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  >
+                    Login
+                  </button>
+                  <button
+                    type="button"
+                    className="w-full py-2 px-4 rounded-lg font-medium text-lg bg-gray-300 text-gray-700 hover:bg-gray-400 shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    onClick={() => { setShowAdminLogin(false); setAdminPasswordInput(''); setAdminError(''); setCurrentView('customer'); }}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </form>
             </motion.div>
           </motion.div>
