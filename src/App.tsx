@@ -278,6 +278,11 @@ function App() {
   const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
   const [selectedMeal, setSelectedMeal] = useState<FoodItem | null>(null);
   const [menuLoaded, setMenuLoaded] = useState(false);
+  // Add state for vendor phone and loading
+  const [vendorPhone, setVendorPhone] = useState('');
+  const [vendorPhoneLoaded, setVendorPhoneLoaded] = useState(false);
+  const [vendorPhoneEdit, setVendorPhoneEdit] = useState('');
+  const [vendorPhoneSaving, setVendorPhoneSaving] = useState(false);
 
   // Helper to parse closing time string ("HH:mm") into a Date object for today
   const getClosingDate = () => {
@@ -400,6 +405,28 @@ function App() {
       setOrders(orderList);
     });
     return () => unsub();
+  }, []);
+
+  // Firestore: Listen for real-time updates to vendor phone number
+  useEffect(() => {
+    const phoneDoc = doc(db, 'settings', 'vendorPhone');
+    let unsub;
+    (async () => {
+      const snap = await getDoc(phoneDoc);
+      if (!snap.exists()) {
+        await setDoc(phoneDoc, { value: '' });
+        setVendorPhone('');
+      } else {
+        setVendorPhone(snap.data().value || '');
+      }
+      setVendorPhoneLoaded(true);
+      unsub = onSnapshot(phoneDoc, (docSnap) => {
+        if (docSnap.exists()) {
+          setVendorPhone(docSnap.data().value || '');
+        }
+      });
+    })();
+    return () => { if (unsub) unsub(); };
   }, []);
 
   const addToCart = (item: FoodItem) => {
@@ -690,9 +717,7 @@ function App() {
     }
   };
 
-  const VENDOR_PHONE = "0790604876"; // Replace with your actual number
-
-  if (!closingTimeLoaded || !menuLoaded) {
+  if (!closingTimeLoaded || !menuLoaded || !vendorPhoneLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -745,6 +770,36 @@ function App() {
                 className="border rounded px-2 py-1"
               />
               <span className="text-gray-600">Current: {orderClosingTime}</span>
+            </div>
+            {/* Vendor phone control */}
+            <div className="mt-4 flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-base">
+              <label className="font-medium">Vendor Phone Number:</label>
+              <input
+                type="text"
+                value={vendorPhoneEdit === '' ? vendorPhone : vendorPhoneEdit}
+                onChange={e => setVendorPhoneEdit(e.target.value)}
+                className="border rounded px-2 py-1"
+                placeholder="Enter vendor phone number"
+              />
+              <button
+                onClick={async () => {
+                  setVendorPhoneSaving(true);
+                  try {
+                    await setDoc(doc(db, 'settings', 'vendorPhone'), { value: vendorPhoneEdit });
+                    setVendorPhoneEdit('');
+                    toast.success('Vendor phone updated!');
+                  } catch (err) {
+                    toast.error('Failed to update phone number');
+                  } finally {
+                    setVendorPhoneSaving(false);
+                  }
+                }}
+                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                disabled={vendorPhoneSaving || (vendorPhoneEdit === '' || vendorPhoneEdit === vendorPhone)}
+              >
+                {vendorPhoneSaving ? 'Saving...' : 'Save'}
+              </button>
+              <span className="text-gray-600">Current: {vendorPhone || 'Not set'}</span>
             </div>
           </div>
         </div>
@@ -1081,14 +1136,15 @@ function App() {
                     <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200 flex flex-col items-center">
                       <span className="font-semibold text-blue-700 text-sm mb-1">Pay Vendor Directly (Optional):</span>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-lg text-blue-900">{VENDOR_PHONE}</span>
+                        <span className="font-mono text-lg text-blue-900">{vendorPhone}</span>
                         <button
                           className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
                           onClick={() => {
-                            navigator.clipboard.writeText(VENDOR_PHONE);
+                            navigator.clipboard.writeText(vendorPhone);
                             toast.success("Phone number copied!");
                           }}
                           type="button"
+                          disabled={!vendorPhone}
                         >
                           Copy
                         </button>
