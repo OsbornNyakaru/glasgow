@@ -690,7 +690,7 @@ function App() {
     }
   };
 
-  const VENDOR_PHONE = "0712 345 678"; // Replace with your actual number
+  const VENDOR_PHONE = "0790604876"; // Replace with your actual number
 
   if (!closingTimeLoaded || !menuLoaded) {
     return (
