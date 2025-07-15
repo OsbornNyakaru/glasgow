@@ -330,11 +330,10 @@ function App() {
         if (menuSnapshot.empty) {
           // If no menu items exist, populate with initial data
           console.log('Initializing menu items in Firestore...');
-          const batch = [];
           for (const item of initialMenuItems) {
-            batch.push(addDoc(menuCol, item));
+            const { id, ...itemData } = item; // Remove the local id
+            await addDoc(menuCol, itemData);
           }
-          await Promise.all(batch);
           toast.success('Menu initialized successfully!');
         }
         
@@ -361,6 +360,8 @@ function App() {
       } catch (error) {
         console.error('Error initializing menu:', error);
         toast.error('Failed to load menu items');
+        // Fallback to local menu items if Firebase fails
+        setMenuItems(initialMenuItems);
         setMenuLoaded(true);
       }
     };
@@ -373,7 +374,7 @@ function App() {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, []);
+  }, []); // Empty dependency array to run only once
   // Update time every minute
   useEffect(() => {
     const timer = setInterval(() => {
