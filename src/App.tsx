@@ -690,6 +690,8 @@ function App() {
     }
   };
 
+  const VENDOR_PHONE = "0712 345 678"; // Replace with your actual number
+
   if (!closingTimeLoaded || !menuLoaded) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -1074,6 +1076,24 @@ function App() {
                           </button>
                         </div>
                       ))}
+                    </div>
+                    {/* Vendor Phone Section */}
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200 flex flex-col items-center">
+                      <span className="font-semibold text-blue-700 text-sm mb-1">Pay Vendor Directly (Optional):</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-lg text-blue-900">{VENDOR_PHONE}</span>
+                        <button
+                          className="text-xs bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700"
+                          onClick={() => {
+                            navigator.clipboard.writeText(VENDOR_PHONE);
+                            toast.success("Phone number copied!");
+                          }}
+                          type="button"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      <span className="text-xs text-gray-600 mt-1">You can pay via M-Pesa or your preferred method before submitting your order.</span>
                     </div>
                     <div className="border-t pt-4 border-gray-200 dark:border-gray-700">
                       <div className="flex justify-between items-center mb-4">
