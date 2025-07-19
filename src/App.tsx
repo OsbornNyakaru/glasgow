@@ -751,6 +751,13 @@ function App() {
                   <Download className="w-4 h-4" />
                   Export to Google Sheets
                 </button>
+                {/* TEMPORARY BUTTON - REMOVE AFTER USE */}
+                <button
+                  onClick={addLiverMealsToDatabase}
+                  className="bg-purple-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-purple-700 text-xs md:text-base"
+                >
+                  Add Liver Meals
+                </button>
                 <button
                   onClick={() => setCurrentView('customer')}
                   className="bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg hover:bg-blue-700 text-xs md:text-base"
