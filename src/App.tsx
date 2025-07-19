@@ -813,11 +813,11 @@ function App() {
           <div className="max-w-6xl mx-auto px-2 md:px-4 py-4">
             <div className="flex flex-wrap items-center justify-between gap-2 md:gap-0">
               <div className="flex items-center gap-3">
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
+                <div className="bg-[#05134c] p-2 rounded-xl shadow-lg">
                   <Settings className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg md:text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
+                  <h1 className="text-lg md:text-xl font-bold text-[#05134c]">
                     Admin Dashboard
                   </h1>
                   <p className="text-gray-600 text-xs">CSA Workshop Management</p>
@@ -833,7 +833,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => setCurrentView('customer')}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 md:px-4 py-2 rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg transition-all duration-200 text-xs md:text-base hover:scale-105"
+                  className="bg-[#05134c] text-white px-3 md:px-4 py-2 rounded-xl hover:bg-[#16226a] shadow-lg transition-all duration-200 text-xs md:text-base hover:scale-105"
                 >
                   Customer View
                 </button>
@@ -894,7 +894,7 @@ function App() {
                         setVendorPhoneSaving(false);
                       }
                     }}
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:from-emerald-600 hover:to-teal-700 shadow-md transition-all duration-200 disabled:opacity-50"
+                    className="bg-[#05134c] text-white px-4 py-2 rounded-lg hover:bg-[#16226a] shadow-md transition-all duration-200 disabled:opacity-50"
                     disabled={vendorPhoneSaving || (vendorPhoneEdit === '' || vendorPhoneEdit === vendorPhone)}
                   >
                     {vendorPhoneSaving ? 'Saving...' : 'Save'}
@@ -1018,7 +1018,7 @@ function App() {
                         setBulkActionLoading(false);
                       }
                     }}
-                    className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-3 py-2 rounded-xl hover:from-red-600 hover:to-pink-700 shadow-md transition-all duration-200 text-xs md:text-sm disabled:opacity-50"
+                    className="bg-[#05134c] text-white px-3 py-2 rounded-xl hover:bg-[#16226a] shadow-md transition-all duration-200 text-xs md:text-sm disabled:opacity-50"
                     disabled={bulkActionLoading}
                   >
                     Mark All Unavailable
@@ -1041,7 +1041,7 @@ function App() {
                         setBulkActionLoading(false);
                       }
                     }}
-                    className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-2 rounded-xl hover:from-emerald-600 hover:to-teal-700 shadow-md transition-all duration-200 text-xs md:text-sm disabled:opacity-50"
+                    className="bg-[#05134c] text-white px-3 py-2 rounded-xl hover:bg-[#16226a] shadow-md transition-all duration-200 text-xs md:text-sm disabled:opacity-50"
                     disabled={bulkActionLoading}
                   >
                     Mark All Available
@@ -1173,12 +1173,12 @@ function App() {
           <div className="flex items-center justify-between">
             {/* Logo and Title Section */}
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-xl shadow-lg">
+              <div className="bg-[#05134c] p-2 rounded-xl shadow-lg">
                 <ShoppingCart className="w-6 h-6 text-white" />
               </div>
               <div className="flex items-center gap-4">
                 <div>
-                  <h1 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
+                  <h1 className="text-xl lg:text-2xl font-bold text-[#05134c]">
                     CSA Workshop
                   </h1>
                   <p className="text-gray-600 text-xs">Delicious meals, fresh daily</p>
@@ -1288,9 +1288,9 @@ function App() {
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl p-4 mb-6 shadow-sm"
+            className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl p-2 sm:p-4 mb-4 sm:mb-6 shadow-sm text-xs sm:text-base"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <div className="bg-red-100 p-2 rounded-xl">
                 <Clock className="w-5 h-5 text-red-600" />
               </div>
@@ -1303,15 +1303,15 @@ function App() {
         )}
 
         {/* Enhanced Menu Section */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-100 p-6 lg:p-8">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl shadow-lg">
-              <ShoppingCart className="w-6 h-6 text-white" />
+        <div className="bg-white/70 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-xl border border-gray-100 p-2 sm:p-6 lg:p-8">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-8">
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 sm:p-3 rounded-2xl shadow-lg">
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-800">Today's Menu</h2>
+            <h2 className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-800">Today's Menu</h2>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {categories.map(category => {
               const items = groupedMenuItems[category] || [];
               if (items.length === 0) return null;
@@ -1321,111 +1321,108 @@ function App() {
                   key={category}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+                  className="bg-white/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
                 >
                   {/* Category Header with Dropdown */}
                   <button
                     onClick={() => toggleCategory(category)}
-                    className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors duration-200"
+                    className="w-full flex items-center justify-between p-3 sm:p-6 hover:bg-gray-50 transition-colors duration-200"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-xl shadow-md">
-                        <span className="text-2xl">
-                          {category === 'Chapati Meals' && '🥖'}
-                          {category === 'Rice Meals' && '🍚'}
-                          {category === 'Ugali Meals' && '🌽'}
-                          {category === 'Special Rice' && '🍛'}
-                        </span>
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-xl font-bold text-gray-800">{category}</h3>
-                        <p className="text-gray-500 text-sm">{items.length} items available</p>
-                      </div>
-                    </div>
-                    <motion.div
-                      animate={{ rotate: expandedCategories[category] ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="bg-gray-100 p-2 rounded-xl"
-                    >
-                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </motion.div>
-                  </button>
+                    <div className="flex items-center gap-2 sm:gap-4">
+                      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 sm:p-3 rounded-xl shadow-md">
+                        <span className="text-lg sm:text-2xl">
+                           {category === 'Chapati Meals' && '🥖'}
+                           {category === 'Rice Meals' && '🍚'}
+                           {category === 'Ugali Meals' && '🌽'}
+                           {category === 'Special Rice' && '🍛'}
+                         </span>
+                       </div>
+                       <div className="text-left">
+                        <h3 className="text-base sm:text-xl font-bold text-gray-800">{category}</h3>
+                        <p className="text-gray-500 text-xs sm:text-sm">{items.length} items available</p>
+                       </div>
+                     </div>
+                     <motion.div
+                       animate={{ rotate: expandedCategories[category] ? 180 : 0 }}
+                       transition={{ duration: 0.2 }}
+                       className="bg-gray-100 p-2 rounded-xl"
+                     >
+                       <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                       </svg>
+                     </motion.div>
+                   </button>
 
-                  {/* Collapsible Content */}
-                  <AnimatePresence>
-                    {expandedCategories[category] && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <div className="p-6 pt-0">
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {items.map(item => (
-                              <motion.div
-                                key={item.id}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-xl ${
-                                  !item.available ? 'opacity-60' : 'hover:border-blue-200'
-                                }`}
-                                onClick={() => setSelectedMeal(item)}
-                              >
-                                {item.image && (
-                                  <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
-                                    <img 
-                                      src={item.image} 
-                                      alt={item.name}
-                                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                                    />
-                                    {!item.available && (
-                                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                                          Unavailable
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                )}
-                                
-                                <div className="p-4">
-                                  <div className="flex items-start justify-between mb-2">
-                                    <h4 className="font-bold text-gray-800 text-lg leading-tight">{item.name}</h4>
-                                    <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-md">
-                                      KES {item.price}
-                                    </span>
-                                  </div>
-                                  
-                                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{item.description}</p>
-                                  
-                                  <button
-                                    onClick={e => { e.stopPropagation(); addToCart(item); }}
-                                    disabled={!item.available || !isOrderingTime()}
-                                    className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 shadow-md ${
-                                      item.available && isOrderingTime()
-                                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg hover:scale-105'
-                                        : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                                    }`}
-                                  >
-                                    {!item.available ? 'Unavailable' : !isOrderingTime() ? 'Ordering Closed' : 'Add to Cart'}
-                                  </button>
-                                </div>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
+                   {/* Collapsible Content */}
+                   <AnimatePresence>
+                     {expandedCategories[category] && (
+                       <motion.div
+                         initial={{ height: 0, opacity: 0 }}
+                         animate={{ height: "auto", opacity: 1 }}
+                         exit={{ height: 0, opacity: 0 }}
+                         transition={{ duration: 0.3, ease: "easeInOut" }}
+                         className="overflow-hidden"
+                       >
+                         <div className="p-2 sm:p-6 pt-0">
+                           <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 sm:pb-4 -mx-2 px-2 snap-x snap-mandatory">
+                             {items.map(item => (
+                               <motion.div
+                                 key={item.id}
+                                 whileHover={{ scale: 1.04, rotate: 1 }}
+                                 whileTap={{ scale: 0.98, rotate: -1 }}
+                                 className={`bg-white rounded-xl sm:rounded-2xl shadow-md border-l-4 border-blue-400 border-t border-b border-r border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-xl snap-start min-w-[220px] sm:min-w-[260px] max-w-[80vw] sm:max-w-xs cursor-pointer ${
+                                   !item.available ? 'opacity-60' : 'hover:border-blue-600'
+                                 }`}
+                                 onClick={() => setSelectedMeal(item)}
+                               >
+                                 {item.image && (
+                                   <div className="h-32 sm:h-40 bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
+                                     <img 
+                                       src={item.image} 
+                                       alt={item.name}
+                                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                                     />
+                                     {!item.available && (
+                                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                         <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs sm:text-sm font-medium">
+                                           Unavailable
+                                         </span>
+                                       </div>
+                                     )}
+                                   </div>
+                                 )}
+                                 <div className="p-2 sm:p-4">
+                                   <div className="flex flex-col items-center text-center mb-1 sm:mb-2">
+                                     <h4 className="font-bold text-gray-800 text-base sm:text-lg leading-tight truncate w-full max-w-[150px] sm:max-w-[180px]">{item.name}</h4>
+                                     <span className="mt-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-semibold shadow-md whitespace-nowrap">
+                                       KES {item.price}
+                                     </span>
+                                   </div>
+                                   <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-4 line-clamp-2">{item.description}</p>
+                                   <button
+                                     onClick={e => { e.stopPropagation(); addToCart(item); }}
+                                     disabled={!item.available || !isOrderingTime()}
+                                     className={`w-full py-2 sm:py-3 px-2 sm:px-4 rounded-xl font-semibold transition-all duration-200 shadow-md ${
+                                       item.available && isOrderingTime()
+                                         ? 'bg-gradient-to-r from-[#05134c] to-[#05134c] text-white hover:bg-[#16226a] hover:from-[#16226a] hover:to-[#16226a] hover:shadow-lg hover:scale-105'
+                                         : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                     }`}
+                                   >
+                                     {!item.available ? 'Unavailable' : !isOrderingTime() ? 'Ordering Closed' : 'Add to Cart'}
+                                   </button>
+                                 </div>
+                               </motion.div>
+                             ))}
+                           </div>
+                         </div>
+                       </motion.div>
+                     )}
+                   </AnimatePresence>
+                 </motion.div>
+               );
+             })}
+           </div>
+         </div>
       </div>
 
       {/* Daily Encouragement Popup */}
@@ -1576,7 +1573,7 @@ function App() {
       {cart.length > 0 && (
         <>
                       <button
-              className="fixed bottom-6 right-6 z-50 bg-gradient-to-tr from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white p-4 rounded-full shadow-xl flex items-center gap-2 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-300"
+              className="fixed bottom-6 right-6 z-50 bg-[#05134c] text-white p-4 rounded-full shadow-xl flex items-center gap-2 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-emerald-300 hover:bg-[#16226a]"
               onClick={() => setIsCartOpen(true)}
               aria-label="View Cart"
             >
@@ -1716,8 +1713,8 @@ function App() {
                 disabled={!selectedMeal.available || !isOrderingTime()}
                 className={`w-full py-3 px-4 rounded-lg font-medium text-lg transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
                   selectedMeal.available && isOrderingTime()
-                    ? 'bg-gradient-to-tr from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-[#05134c] to-[#05134c] text-white hover:bg-[#16226a] hover:from-[#16226a] hover:to-[#16226a] hover:shadow-lg hover:scale-105'
+                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 }`}
               >
                 {!selectedMeal.available ? 'Unavailable' : !isOrderingTime() ? 'Ordering Closed' : 'Add to Cart'}
